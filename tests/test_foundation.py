@@ -20,22 +20,24 @@ from studio_contracts import (
 )
 
 
-def test_execution_context_immutability():
+def test_execution_context_immutability() -> None:
     """Đảm bảo Context danh tính là bất biến."""
     t_id = uuid.uuid4()
     u_id = uuid.uuid4()
     ctx = ExecutionContext(
         tenant_id=t_id,
         user_id=u_id,
+        department_id=None,
         system_role=SystemRole.TENANT_ADMIN,
         dept_role=DepartmentRole.DEPT_ADMIN,
+        allowed_department_ids=[],
     )
     assert ctx.tenant_id == t_id
     with pytest.raises(ValidationError):
         ctx.system_role = SystemRole.USER  # type: ignore[misc]
 
 
-def test_agent_recipe_with_tool_satellites():
+def test_agent_recipe_with_tool_satellites() -> None:
     """Kiểm tra Agent có duy nhất 1 node llm_step và danh sách vệ tinh tool động."""
     calc_tool = ToolDefinition(
         name="calculator",
@@ -55,13 +57,18 @@ def test_agent_recipe_with_tool_satellites():
     recipe = Recipe(
         agent_id="agent-copilot-01",
         tenant_id=uuid.uuid4(),
+        department_id=None,
         name="Enterprise Assistant",
         recipe_hash="sha256_hash_mock",
         scope=AgentScope.COMPANY,
         status=RecipeStatus.DRAFT,
+        tool_description=None,
         agent_config=AgentConfig(
             instructions="Bạn là trợ lý giải toán và hỗ trợ nghiệp vụ công ty.",
             model="gpt-4o-mini",
+            temperature=0.2,
+            max_tokens=2048,
+            max_tool_iterations=5,
             tools=[calc_tool, kb_tool],
             bound_kb_ids=[uuid.uuid4()],
         ),
@@ -84,7 +91,7 @@ def test_agent_recipe_with_tool_satellites():
     assert len(recipe.agent_config.bound_kb_ids) == 1
 
 
-def test_kb_search_query_scoping():
+def test_kb_search_query_scoping() -> None:
     """Đảm bảo query tìm kiếm vector gắn chặt với tenant và quyền phòng ban."""
     t_id = uuid.uuid4()
     d_id = uuid.uuid4()
