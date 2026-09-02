@@ -1,36 +1,32 @@
-"""TraceEvent contract (R-SPEC A1#2, umbrella-contract.md:118-136) — bút DE.
-
-Owner: DE bút + sink; every node (AIE-1 executor) emits a TraceEvent. `cost`
-must be the SAME number surfaced on all 3 downstream surfaces (UI test/trace/
-dashboard) — a mismatch there is a bug in a consumer, not in this contract.
-"""
-
 from __future__ import annotations
 
-from pydantic import BaseModel, ConfigDict
+from typing import Any
+from uuid import UUID
 
-from studio_contracts.nodes import NodeType
+from pydantic import BaseModel, ConfigDict, Field
 
 
-class Tokens(BaseModel):
+class TokenUsage(BaseModel):
     model_config = ConfigDict(frozen=True)
 
-    prompt: int
-    completion: int
+    prompt_tokens: int
+    completion_tokens: int
+    total_tokens: int
 
 
 class TraceEvent(BaseModel):
+    """Bản ghi sự kiện từng bước chạy của Agent phục vụ phân tích chi phí."""
+
     model_config = ConfigDict(frozen=True)
 
     event_id: str
     run_id: str
     agent_id: str
-    tenant: str  # NOT NULL, INV-1
-    node_id: str
-    node_type: NodeType
-    ts: str  # iso8601, monotonic within a run
-    inputs_hash: str
-    outputs: dict[str, object]
-    tokens: Tokens
-    cost: float
-    citations: list[str] | None = None  # from kb-retrieve
+    tenant_id: UUID
+    step_name: str
+    inputs: dict[str, Any] = Field(default_factory=dict)
+    outputs: dict[str, Any] = Field(default_factory=dict)
+    tokens: TokenUsage
+    cost: float = 0.0
+    citations: list[str] = Field(default_factory=list)
+    timestamp: str
