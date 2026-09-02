@@ -2,21 +2,25 @@
 
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 from uuid import UUID
+
 from pydantic import BaseModel, ConfigDict, Field
+
 from studio_contracts.tools import ToolDefinition
 
 
-class AgentScope(str, Enum):
+class AgentScope(StrEnum):
     """Phạm vi hoạt động của Agent."""
+
     DEPARTMENT = "DEPARTMENT"
     COMPANY = "COMPANY"
 
 
-class RecipeStatus(str, Enum):
+class RecipeStatus(StrEnum):
     """Vòng đời phát triển và phê duyệt Agent."""
+
     DRAFT = "DRAFT"
     EVALUATED = "EVALUATED"
     PENDING_APPROVAL = "PENDING_APPROVAL"
@@ -25,8 +29,9 @@ class RecipeStatus(str, Enum):
     ARCHIVED = "ARCHIVED"
 
 
-class NodeType(str, Enum):
+class NodeType(StrEnum):
     """Các loại khối kéo thả trên Canvas."""
+
     LLM_STEP = "llm_step"
     TOOL_NODE = "tool_node"
     GUARDRAIL = "guardrail"
@@ -36,6 +41,7 @@ class NodeType(str, Enum):
 
 class CanvasNode(BaseModel):
     """Một node trong đồ thị Canvas."""
+
     model_config = ConfigDict(frozen=True)
 
     id: str
@@ -46,6 +52,7 @@ class CanvasNode(BaseModel):
 
 class CanvasEdge(BaseModel):
     """Cạnh nối giữa 2 node trên Canvas (tương thích serialize 'from' alias)."""
+
     model_config = ConfigDict(frozen=True, populate_by_name=True)
 
     from_: str = Field(..., alias="from")
@@ -55,6 +62,7 @@ class CanvasEdge(BaseModel):
 
 class CanvasGraph(BaseModel):
     """Toàn bộ đồ thị Canvas (có thể chỉ chứa 1 node LLM_STEP hoặc luồng phức tạp)."""
+
     model_config = ConfigDict(frozen=True)
 
     nodes: list[CanvasNode]
@@ -63,15 +71,14 @@ class CanvasGraph(BaseModel):
 
 class AgentConfig(BaseModel):
     """Cấu hình trí tuệ, công cụ và kho dữ liệu cho Agent."""
+
     model_config = ConfigDict(frozen=True)
 
     instructions: str = Field(..., description="System prompt định hướng agent")
     model: str = Field("gpt-4o-mini", description="Mô hình LLM sử dụng")
     temperature: float = 0.2
     max_tokens: int = 2048
-    max_tool_iterations: int = Field(
-        5, description="Giới hạn số lượt gọi tool để chống loop vô hạn"
-    )
+    max_tool_iterations: int = Field(5, description="Giới hạn số lượt gọi tool để chống loop vô hạn")
     # Danh sách Tool vệ tinh (Calculator, Current Time, Webhooks, v.v.)
     tools: list[ToolDefinition] = Field(default_factory=list)
     # HỖ TRỢ MULTI-KB: Danh sách các kho tri thức gán cho Agent tra cứu
@@ -83,6 +90,7 @@ class AgentConfig(BaseModel):
 
 class Recipe(BaseModel):
     """Bản hợp đồng hoàn chỉnh định nghĩa một Agent trong AgentCore Studio."""
+
     model_config = ConfigDict(frozen=True)
 
     agent_id: str

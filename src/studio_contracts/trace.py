@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any
 from uuid import UUID
+
 from pydantic import BaseModel, ConfigDict, Field
 
 
@@ -15,6 +16,7 @@ class TokenUsage(BaseModel):
 
 class TraceEvent(BaseModel):
     """Bản ghi sự kiện từng bước chạy của Agent phục vụ phân tích chi phí."""
+
     model_config = ConfigDict(frozen=True)
 
     event_id: str

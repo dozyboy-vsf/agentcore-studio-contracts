@@ -2,21 +2,24 @@
 
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 from uuid import UUID
+
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class DocumentScope(str, Enum):
+class DocumentScope(StrEnum):
     """Phạm vi truy cập tri thức."""
+
     COMPANY_WIDE = "COMPANY_WIDE"
     DEPARTMENT_RESTRICTED = "DEPARTMENT_RESTRICTED"
     CUSTOM_ACL = "CUSTOM_ACL"
 
 
-class DocumentStatus(str, Enum):
+class DocumentStatus(StrEnum):
     """Vòng đời xử lý file tài liệu trong quá trình Ingestion."""
+
     PENDING = "PENDING"
     PARSING = "PARSING"
     CHUNKING = "CHUNKING"
@@ -26,6 +29,7 @@ class DocumentStatus(str, Enum):
 
 class KnowledgeBaseMetadata(BaseModel):
     """Thực thể đại diện cho một Kho tri thức (1 Tenant có nhiều KB, 1 Dept có nhiều KB)."""
+
     model_config = ConfigDict(frozen=True)
 
     kb_id: UUID = Field(..., description="Mã định danh duy nhất của Kho tri thức")
@@ -47,6 +51,7 @@ class KnowledgeBaseMetadata(BaseModel):
 
 class DocumentMetadata(BaseModel):
     """Thông tin tệp tài liệu gốc được upload vào KB."""
+
     model_config = ConfigDict(frozen=True)
 
     doc_id: UUID
@@ -65,6 +70,7 @@ class DocumentMetadata(BaseModel):
 
 class ChunkMetadata(BaseModel):
     """Siêu dữ liệu gắn kèm từng Chunk văn bản phục vụ Pre-filtering bảo mật."""
+
     model_config = ConfigDict(frozen=True)
 
     tenant_id: UUID
@@ -83,6 +89,7 @@ class ChunkMetadata(BaseModel):
 
 class DocumentChunk(BaseModel):
     """Đoạn văn bản sau khi bẻ nhỏ (Chunk) kèm vector embedding."""
+
     model_config = ConfigDict(frozen=True)
 
     id: str
@@ -95,6 +102,7 @@ class DocumentChunk(BaseModel):
 
 class KbSearchQuery(BaseModel):
     """Truy vấn tìm kiếm Vector có tiêm bộ lọc an toàn và quét qua Multi-KB."""
+
     model_config = ConfigDict(frozen=True)
 
     query_text: str
@@ -113,6 +121,7 @@ class KbSearchQuery(BaseModel):
 
 class Citation(BaseModel):
     """Trích dẫn chứng minh nguồn gốc câu trả lời."""
+
     model_config = ConfigDict(frozen=True)
 
     doc_id: UUID
@@ -124,6 +133,7 @@ class Citation(BaseModel):
 
 class KbSearchResultItem(BaseModel):
     """Kết quả trả về cho mỗi đoạn văn bản tương đồng."""
+
     model_config = ConfigDict(frozen=True)
 
     chunk_id: str

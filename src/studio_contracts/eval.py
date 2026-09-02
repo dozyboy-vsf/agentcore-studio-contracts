@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 from uuid import UUID
+
 from pydantic import BaseModel, ConfigDict, Field
 
 
-class GateDecision(str, Enum):
+class GateDecision(StrEnum):
     PASS = "PASS"
     FAIL = "FAIL"
 
@@ -38,6 +39,7 @@ class ScorecardThreshold(BaseModel):
 
 class Scorecard(BaseModel):
     """Kết quả kiểm định bắt buộc trước khi Publish Agent."""
+
     model_config = ConfigDict(frozen=True)
 
     scorecard_id: UUID

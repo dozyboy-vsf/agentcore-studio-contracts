@@ -2,22 +2,14 @@
 
 from __future__ import annotations
 
+from studio_contracts.eval import (
+    GateDecision,
+    MetricResult,
+    Scorecard,
+    ScorecardThreshold,
+    TestCase,
+)
 from studio_contracts.identity import DepartmentRole, ExecutionContext, SystemRole
-from studio_contracts.tools import (
-    ToolCallRequest,
-    ToolCallResult,
-    ToolDefinition,
-)
-from studio_contracts.recipe import (
-    AgentConfig,
-    AgentScope,
-    CanvasEdge,
-    CanvasGraph,
-    CanvasNode,
-    NodeType,
-    Recipe,
-    RecipeStatus,
-)
 from studio_contracts.kb import (
     ChunkMetadata,
     Citation,
@@ -29,12 +21,20 @@ from studio_contracts.kb import (
     KbSearchResultItem,
     KnowledgeBaseMetadata,
 )
-from studio_contracts.eval import (
-    GateDecision,
-    MetricResult,
-    Scorecard,
-    ScorecardThreshold,
-    TestCase,
+from studio_contracts.recipe import (
+    AgentConfig,
+    AgentScope,
+    CanvasEdge,
+    CanvasGraph,
+    CanvasNode,
+    NodeType,
+    Recipe,
+    RecipeStatus,
+)
+from studio_contracts.tools import (
+    ToolCallRequest,
+    ToolCallResult,
+    ToolDefinition,
 )
 from studio_contracts.trace import TokenUsage, TraceEvent
 
